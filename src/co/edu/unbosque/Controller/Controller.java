@@ -2,22 +2,22 @@ package co.edu.unbosque.Controller;
 
 
 import co.edu.unbosque.Model.Edge;
-import co.edu.unbosque.Model.Grafo;
 import co.edu.unbosque.Model.GrafoDirigido;
+import co.edu.unbosque.Model.GrafoNoDirigido;
 import co.edu.unbosque.Model.Node;
 import co.edu.unbosque.View.View;
 
 public class Controller {
 
     private View view;
-    private Grafo grafo;
-    private GrafoDirigido grafoD;
+    private GrafoDirigido grafo;
+    private GrafoNoDirigido grafoD;
 
 
     public  Controller() {
         view = new View();
-        grafo = new Grafo();
-        grafoD = new GrafoDirigido();
+        grafo = new GrafoDirigido();
+        grafoD = new GrafoNoDirigido();
         try {
 			int opcion = view.preguntarTipo("Que tipo de Grafo desea Usar");
 			run(opcion);
