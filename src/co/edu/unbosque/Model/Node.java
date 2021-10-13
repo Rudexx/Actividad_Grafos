@@ -8,6 +8,7 @@ public class Node {
     private List<Edge> edges;
 
     public Node(String city) {
+        edges = new ArrayList<>();
         this.city = city;
     }
 
