@@ -11,24 +11,45 @@ public class GrafoDirigido {
         nodes = new ArrayList<>();
     }
 
-    public void createAdyMatrix(){
+    public void createAdyMatrix(int opcion){
         matrizAdy = new Double[nodes.size()][nodes.size()];
         Node n = null;
         Node n2 = null;
 
         for(int i=0; i< nodes.size(); i++){
             for(int j=0; j< nodes.size(); j++){
-                matrizAdy[i][j] = 0.0;
+                if(opcion == 1) {
+                    matrizAdy[i][j] = 1000000000.0;
+                }else{
+                    matrizAdy[i][j] = 0.0;
+                }
             }
         }
-        for (int i = 0; i < nodes.size(); i++) {
-            n = nodes.get(i);
-            for (int j = 0; j < nodes.size(); j++) {
-                n2 = nodes.get(j);
-                for (int k = 0; k < n.getEdges().size(); k++) {
-                    if(n.getEdges().get(k).getOrigin() == n && n.getEdges().get(k).getDestination() == n2){
-                        matrizAdy[i][j] = n.getEdges().get(k).getDistance();
-                        k = n.getEdges().size();
+        if (opcion == 0) {
+            for (int i = 0; i < nodes.size(); i++) {
+                n = nodes.get(i);
+                for (int j = 0; j < nodes.size(); j++) {
+                    n2 = nodes.get(j);
+                    for (int k = 0; k < n.getEdges().size(); k++) {
+                        if (n.getEdges().get(k).getOrigin() == n && n.getEdges().get(k).getDestination() == n2) {
+                            matrizAdy[i][j] = n.getEdges().get(k).getDistance();
+                            k = n.getEdges().size();
+                        }
+                    }
+                }
+            }
+        }else{
+            for (int i = 0; i < nodes.size(); i++) {
+                n = nodes.get(i);
+                for (int j = 0; j < nodes.size(); j++) {
+                    n2 = nodes.get(j);
+                    for (int k = 0; k < n.getEdges().size(); k++) {
+                        if (n.getEdges().get(k).getOrigin() == n && n.getEdges().get(k).getDestination() == n2) {
+                            matrizAdy[i][j] = n.getEdges().get(k).getDistance();
+                            k = n.getEdges().size();
+                        }else{
+                            matrizAdy[i][j] = 1000000000.0;
+                        }
                     }
                 }
             }
@@ -37,7 +58,7 @@ public class GrafoDirigido {
 
     public  Double matrizCaminos(Node n, Node n1) throws Exception
         {
-            createAdyMatrix();
+            createAdyMatrix(0);
             int l = nodes.size();
             Double [][] P = matrizAdy; // matriz de caminos
     // Se obtiene la matriz inicial: matriz de adyacencia
@@ -157,7 +178,7 @@ public class GrafoDirigido {
 
     public String showPaths(){
 
-        createAdyMatrix();
+        createAdyMatrix(0);
         String resultado = "";
 
         for (int i = 0; i <matrizAdy.length ; i++) {
@@ -170,6 +191,91 @@ public class GrafoDirigido {
         return resultado;
     }
 
+
+
+    public String caminosR(int i, int k, String[][] caminosAuxiliares, String caminoRecorrido) {
+        if(caminosAuxiliares[i][k].equals("")){
+            return "";
+        }else{
+            caminoRecorrido +=caminosR(i, Integer.parseInt(caminosAuxiliares[i][k].toString()), caminosAuxiliares, caminoRecorrido)+(Integer.parseInt(caminosAuxiliares[i][k].toString())+1)+", ";
+            return caminoRecorrido;
+        }
+    }
+
+    public String algoritmoFloyd(){
+        createAdyMatrix(1);
+        int vertices = matrizAdy.length;
+        Double matrizAdyacencia [][] = matrizAdy;
+        String caminos [][] = new String [vertices][vertices];
+        String caminosAuxiliares [][]=new String [vertices][vertices];
+        String caminoRecorrido ="",cadena="",caminitos="";
+        int i,j,k;
+        Double temporal1, temporal2, temporal3, temporal4, minimo;
+        for (int l = 0; l <vertices ; l++) {
+            for (int m = 0; m <vertices ; m++) {
+                System.out.println(matrizAdyacencia[l][m]);
+            }
+        }
+        //inicializar matrices y caminos
+        for(i=0;i<vertices;i++) {
+            for(j=0;j<vertices;j++){
+                caminos[i][j]="";
+                caminosAuxiliares[i][j]="";
+            }
+        }
+
+        for(k=0;k<vertices; k++){
+            for(i=0;i<vertices; i++){
+                for (j=0;j<vertices; j++){
+
+                    temporal1=matrizAdyacencia [i][j];
+                    temporal2=matrizAdyacencia [i][k];
+                    temporal3=matrizAdyacencia [k][j];
+                    temporal4= temporal2 + temporal3;
+                    //encontrando al minimo
+                    minimo=Math.min(temporal1, temporal4);
+                    if(!temporal1.equals(temporal4)){
+                        if(minimo.equals(temporal4)){
+                            caminoRecorrido="";
+                            caminosAuxiliares[1][j] = k + "";
+                            caminos[i][j]= caminosR(i,k,caminosAuxiliares, caminoRecorrido) + (k+1);
+
+                        }
+                    }
+                    matrizAdyacencia[i][j]=(Double) minimo;
+                }
+            }
+        }
+        //agregando el camino a cadeba
+        for(i=0;i<vertices;i++) {
+            for(j=0;j<vertices;j++){
+                cadena=cadena+"["+matrizAdyacencia[i][j]+"]";
+            }
+            cadena=cadena+"\n";
+        }
+        for(i=0;i<vertices;i++) {
+            Node n = nodes.get(i);
+            for(j=0;j<vertices;j++){
+                Node n2 = nodes.get(j);
+                if(matrizAdyacencia[i][j]!=1000000000){
+                    if(i!=j){
+                        if(caminos[i][j].equals("")){
+                            caminitos += "de ("+ (i+1)+"---->"+(j+1)+") irse por...("+(i+1)+", "+(j+1)+")\n";
+                        }else{ caminitos +="de ("+ (i+1)+"---->"+(j+1)+") irse por...("+(i+1)+", "+caminos[i][j] + ", " +(j+1)+")\n";
+                        }
+                    }
+                }
+            }
+        }
+
+        for (int l = 0; l < vertices; l++) {
+            Node n = nodes.get(l);
+            caminitos = caminitos.replaceAll(String.valueOf(l+1), n.getCity());
+        }
+
+        return "LA MATRIZ DE CAMINOS MAS CORTOS ENTRE LOS DIFERENTES VERTICES ES \n" +cadena+
+                "\n LOS DIFERENTES CAMINOS MAS CORTOS ENTRE VERTICES SON:\n"+caminitos;
+    }
 
 
 }

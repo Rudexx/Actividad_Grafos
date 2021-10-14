@@ -19,6 +19,9 @@ public class View {
             UI.put("ComboBox.selectionBackground", new Color(77, 81, 75  ));
             UI.put("ComboBox.background", new Color(80, 98, 74   ));
             UI.put("ComboBox.foreground", new Color(234, 236, 234 ));
+            UI.put("TextField.font",new Font( "Times New Roman", Font.BOLD, 17));
+            UI.put("TextField.background", new Color(152, 176, 144 ));
+            UI.put("TextField.foreground", new Color(119, 49, 49  ));
         } catch (Exception e) {
             e.printStackTrace();
         }
