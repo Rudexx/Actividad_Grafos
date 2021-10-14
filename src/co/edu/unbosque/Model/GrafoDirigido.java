@@ -9,7 +9,6 @@ public class GrafoDirigido {
 
     public  GrafoDirigido(){
         nodes = new ArrayList<>();
-
     }
 
     public void createAdyMatrix(){
@@ -36,7 +35,6 @@ public class GrafoDirigido {
         }
     }
 
-
     public  Double matrizCaminos(Node n, Node n1) throws Exception
         {
             createAdyMatrix();
@@ -55,7 +53,6 @@ public class GrafoDirigido {
                     System.out.println();
                 }
             }
-
             for (int i = 0; i < nodes.size(); i++) {
                 Node m = nodes.get(i);
                 for (int j = 0; j < nodes.size(); j++) {
@@ -65,17 +62,13 @@ public class GrafoDirigido {
                     }
                 }
             }
-
             return 0.0;
     }
-
-
 
     public void addNode(Node node) {
         if (nodes == null) {
             nodes = new ArrayList<>();
         }
-
         nodes.add(node);
     }
 
